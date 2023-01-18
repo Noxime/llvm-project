@@ -53,5 +53,5 @@ br:
 # CHECK-NEXT: add x1, x1, #{{[1-8a-f][0-9a-f]*}}
 # CHECK-NEXT: adrp x2, 0x{{[1-8a-f][0-9a-f]*}}
 # CHECK-NEXT: add x2, x2, #{{[1-8a-f][0-9a-f]*}}
-# CHECK-NEXT: adr x3, 0x{{[1-8a-f][0-9a-f]*}}
+# CHECK-NEXT: adr x3, #{{[0-9][0-9]*}}
 # CHECK-ERROR: BOLT-ERROR: Cannot relax adr in non-simple function main
