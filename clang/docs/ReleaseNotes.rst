@@ -583,6 +583,25 @@ Miscellaneous Clang Crashes Fixed
 
 Target Specific Changes
 -----------------------
+- ``sifive-7-rv32`` and ``sifive-7-rv64`` are no longer supported for ``-mcpu``.
+  Use ``sifive-e76``, ``sifive-s76``, or ``sifive-u74`` instead.
+- Native detections via ``-mcpu=native`` and ``-mtune=native`` are supported.
+- Fix interaction of ``-mcpu`` and ``-march``, RISC-V backend will take the
+  architecture extension union of ``-mcpu`` and ``-march`` before, and now will
+  take architecture extensions from ``-march`` if both are given.
+- An ABI mismatch between GCC and Clang that related to the
+  sign/zero-extension of integer scalars was fixed.
+- An overall simplification of the RISC-V Vector intrinsics are done. The
+  simplification is based on
+  `riscv-non-isa/rvv-intrinsic-doc#186 <https://github.com/riscv-non-isa/rvv-intrinsic-doc/pull/186>`_.
+- Intrinsics of `vcompress` and `vmerge` have been adjusted to have interfaces
+  be aligned among `vvm`, `vxm` intrinsics. The adjustment is base on
+  `riscv-non-isa/rvv-intrinsic-doc#185 <https://github.com/riscv-non-isa/rvv-intrinsic-doc/pull/185>`_.
+- All RISC-V Vector intrinsics now share a `__riscv_` prefix, based on the
+  naming convention defined by
+  `riscv-non-isa/riscv-c-api-doc#31 <https://github.com/riscv-non-isa/riscv-c-api-doc/pull/31>`_.
+- Note that the RISC-V Vector C intrinsics are still under development. The RVV
+  C Intrinsic Task Group is working towards a ratified v1.0.
 
 AMDGPU Support
 ^^^^^^^^^^^^^^
