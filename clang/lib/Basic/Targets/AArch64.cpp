@@ -689,6 +689,10 @@ void AArch64TargetInfo::setFeatureEnabled(llvm::StringMap<bool> &Features,
   if (!Enabled)
     return;
 
+  // Disabling an architecture feature does not affect dependent features
+  if (!Enabled)
+    return;
+
   for (const auto *OtherArch : llvm::AArch64::ArchInfos)
     if (ArchInfo->implies(*OtherArch))
       Features[OtherArch->getSubArch()] = true;
