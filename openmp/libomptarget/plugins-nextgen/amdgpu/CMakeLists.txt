@@ -89,6 +89,7 @@ add_llvm_library(omptarget.rtl.amdgpu.nextgen SHARED
 
   NO_INSTALL_RPATH
 )
+<<<<<<< HEAD
 
 if ((OMPT_TARGET_DEFAULT) AND (LIBOMPTARGET_OMPT_SUPPORT))
   target_link_libraries(omptarget.rtl.amdgpu.nextgen PRIVATE OMPT)
@@ -98,6 +99,8 @@ if (LIBOMP_HAVE_VERSION_SCRIPT_FLAG)
   target_link_libraries(omptarget.rtl.amdgpu.nextgen PRIVATE
     "-Wl,--version-script=${CMAKE_CURRENT_SOURCE_DIR}/../exports")
 endif()
+=======
+>>>>>>> 6d859df46e93 ([Libomptarget] Remove dependency on the DeviceRTL from the GPU plugins)
 
 target_include_directories(
   omptarget.rtl.amdgpu.nextgen

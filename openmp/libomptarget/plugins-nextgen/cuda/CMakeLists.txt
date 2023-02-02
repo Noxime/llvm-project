@@ -60,6 +60,7 @@ else()
   target_include_directories(omptarget.rtl.cuda.nextgen PRIVATE ../../plugins/cuda/dynamic_cuda)
   target_sources(omptarget.rtl.cuda.nextgen PRIVATE ../../plugins/cuda/dynamic_cuda/cuda.cpp)
 endif()
+<<<<<<< HEAD
 
 # Define debug prefix. TODO: This should be automatized in the Debug.h but it
 # requires changing the original plugins.
@@ -67,6 +68,8 @@ target_compile_definitions(omptarget.rtl.cuda.nextgen PRIVATE TARGET_NAME="CUDA"
 target_compile_definitions(omptarget.rtl.cuda.nextgen PRIVATE DEBUG_PREFIX="TARGET CUDA RTL")
 
 target_include_directories(omptarget.rtl.cuda.nextgen PRIVATE ${LIBOMPTARGET_INCLUDE_DIR})
+=======
+>>>>>>> 6d859df46e93 ([Libomptarget] Remove dependency on the DeviceRTL from the GPU plugins)
 
 # Install plugin under the lib destination folder.
 install(TARGETS omptarget.rtl.cuda.nextgen LIBRARY DESTINATION "${OPENMP_INSTALL_LIBDIR}")

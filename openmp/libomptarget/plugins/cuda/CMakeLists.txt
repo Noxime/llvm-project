@@ -50,10 +50,13 @@ else()
   target_include_directories(omptarget.rtl.cuda PRIVATE dynamic_cuda)
   target_sources(omptarget.rtl.cuda PRIVATE dynamic_cuda/cuda.cpp)
 endif()
+<<<<<<< HEAD
 
 # Define the suffix for the runtime messaging dumps.
 target_compile_definitions(omptarget.rtl.cuda PRIVATE TARGET_NAME="CUDA")
 target_include_directories(omptarget.rtl.cuda PRIVATE ${LIBOMPTARGET_INCLUDE_DIR})
+=======
+>>>>>>> 6d859df46e93 ([Libomptarget] Remove dependency on the DeviceRTL from the GPU plugins)
 
 # Install plugin under the lib destination folder.
 install(TARGETS omptarget.rtl.cuda LIBRARY DESTINATION "${OPENMP_INSTALL_LIBDIR}")
