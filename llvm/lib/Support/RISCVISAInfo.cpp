@@ -744,7 +744,6 @@ Error RISCVISAInfo::checkDependency() {
 
   // Additional dependency checks.
   // TODO: The 'q' extension requires rv64.
-  // TODO: It is illegal to specify 'e' extensions with 'f' and 'd'.
 
   return Error::success();
 }
@@ -970,10 +969,10 @@ RISCVISAInfo::postProcessAndChecking(std::unique_ptr<RISCVISAInfo> &&ISAInfo) {
 
 StringRef RISCVISAInfo::computeDefaultABI() const {
   if (XLen == 32) {
-    if (hasExtension("d"))
-      return "ilp32d";
     if (hasExtension("e"))
       return "ilp32e";
+    if (hasExtension("d"))
+      return "ilp32d";
     return "ilp32";
   } else if (XLen == 64) {
     if (hasExtension("d"))

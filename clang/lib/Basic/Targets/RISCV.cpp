@@ -192,6 +192,9 @@ void RISCVTargetInfo::getTargetDefines(const LangOptions &Opts,
 
   if (ISAInfo->hasExtension("zve32x"))
     Builder.defineMacro("__riscv_vector");
+
+  if (ISAInfo->hasExtension("e"))
+    Builder.defineMacro("__riscv_32e");
 }
 
 const Builtin::Info RISCVTargetInfo::BuiltinInfo[] = {
@@ -282,6 +285,11 @@ bool RISCVTargetInfo::handleTargetFeatures(std::vector<std::string> &Features,
   if (ABI.empty())
     ABI = ISAInfo->computeDefaultABI().str();
 
+  if (ABI == "ilp32e" && ISAInfo->hasExtension("d")) {
+    Diags.Report(diag::err_invalid_feature_combination)
+        << "ILP32E must not be used with the D ISA extension";
+    return false;
+  }
   return true;
 }
 

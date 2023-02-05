@@ -25,6 +25,20 @@
 
 using namespace llvm;
 
+static Align getABIStackAlignment(RISCVABI::ABI ABI) {
+  if (ABI == RISCVABI::ABI_ILP32E)
+    return Align(4);
+
+  return Align(16);
+}
+
+RISCVFrameLowering::RISCVFrameLowering(const RISCVSubtarget &STI)
+    : TargetFrameLowering(StackGrowsDown,
+                          getABIStackAlignment(STI.getTargetABI()),
+                          /*LocalAreaOffset=*/0,
+                          /*TransientStackAlignment=*/Align(16)),
+      STI(STI) {}
+
 // For now we use x18, a.k.a s2, as pointer to shadow call stack.
 // User should explicitly set -ffixed-x18 and not use x18 in their asm.
 static void emitSCSPrologue(MachineFunction &MF, MachineBasicBlock &MBB,
@@ -442,7 +456,8 @@ void RISCVFrameLowering::emitPrologue(MachineFunction &MF,
   if (int LibCallRegs = getLibCallID(MF, MFI.getCalleeSavedInfo()) + 1) {
     // Calculate the size of the frame managed by the libcall. The libcalls are
     // implemented such that the stack will always be 16 byte aligned.
-    unsigned LibCallFrameSize = alignTo((STI.getXLen() / 8) * LibCallRegs, 16);
+    unsigned LibCallFrameSize =
+        alignTo((STI.getXLen() / 8) * LibCallRegs, getStackAlign());
     RVFI->setLibCallStackSize(LibCallFrameSize);
   }
 

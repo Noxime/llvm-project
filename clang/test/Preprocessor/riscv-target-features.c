@@ -3,6 +3,7 @@
 // RUN: %clang -target riscv64-unknown-linux-gnu -march=rv64i -x c -E -dM %s \
 // RUN: -o - | FileCheck %s
 
+// CHECK-NOT: __riscv_32e
 // CHECK-NOT: __riscv_div
 // CHECK-NOT: __riscv_m
 // CHECK-NOT: __riscv_mul
@@ -44,6 +45,15 @@
 // CHECK-NOT: __riscv_zk
 // CHECK-NOT: __riscv_zicbom
 // CHECK-NOT: __riscv_zicboz
+
+// RUN: %clang -target riscv32-unknown-linux-gnu -march=rv32e -x c -E -dM %s \
+// RUN: -o - | FileCheck --check-prefix=CHECK-E-EXT %s
+// RUN: %clang -target riscv64-unknown-linux-gnu -march=rv32i -mabi=ilp32e -x c -E -dM %s \
+// RUN: -o - | FileCheck --check-prefix=CHECK-ILP32E %s
+// CHECK-E-EXT: __riscv_32e 1
+// CHECK-E-EXT: __riscv_abi_rve 1
+// CHECK-E-EXT: __riscv_e 1009000
+// CHECK-ILP32E: __riscv_abi_rve 1
 
 // RUN: %clang -target riscv32-unknown-linux-gnu -march=rv32im -x c -E -dM %s \
 // RUN: -o - | FileCheck --check-prefix=CHECK-M-EXT %s

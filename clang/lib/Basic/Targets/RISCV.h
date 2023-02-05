@@ -112,6 +112,12 @@ public:
   }
 
   bool setABI(const std::string &Name) override {
+    if (Name == "ilp32e") {
+      ABI = Name;
+      resetDataLayout("e-m:e-p:32:32-i64:64-n32-S32");
+      return true;
+    }
+
     if (Name == "ilp32" || Name == "ilp32f" || Name == "ilp32d") {
       ABI = Name;
       return true;

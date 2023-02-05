@@ -56,10 +56,16 @@ extern "C" LLVM_EXTERNAL_VISIBILITY void LLVMInitializeRISCVTarget() {
   initializeRISCVInsertVSETVLIPass(*PR);
 }
 
-static StringRef computeDataLayout(const Triple &TT) {
+static StringRef computeDataLayout(const Triple &TT,
+                                   const TargetOptions &Options) {
   if (TT.isArch64Bit())
     return "e-m:e-p:64:64-i64:64-i128:128-n64-S128";
   assert(TT.isArch32Bit() && "only RV32 and RV64 are currently supported");
+
+  StringRef ABIName = Options.MCOptions.getABIName();
+  if (ABIName == "ilp32e")
+    return "e-m:e-p:32:32-i64:64-n32-S32";
+
   return "e-m:e-p:32:32-i64:64-n32-S128";
 }
 
@@ -74,7 +80,7 @@ RISCVTargetMachine::RISCVTargetMachine(const Target &T, const Triple &TT,
                                        Optional<Reloc::Model> RM,
                                        Optional<CodeModel::Model> CM,
                                        CodeGenOpt::Level OL, bool JIT)
-    : LLVMTargetMachine(T, computeDataLayout(TT), TT, CPU, FS, Options,
+    : LLVMTargetMachine(T, computeDataLayout(TT, Options), TT, CPU, FS, Options,
                         getEffectiveRelocModel(TT, RM),
                         getEffectiveCodeModel(CM, CodeModel::Small), OL),
       TLOF(std::make_unique<RISCVELFTargetObjectFile>()) {
