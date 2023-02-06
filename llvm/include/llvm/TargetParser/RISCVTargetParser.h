@@ -32,6 +32,8 @@ StringRef getMArchFromMcpu(StringRef CPU);
 void fillValidCPUArchList(SmallVectorImpl<StringRef> &Values, bool IsRV64);
 void fillValidTuneCPUArchList(SmallVectorImpl<StringRef> &Values, bool IsRV64);
 
+bool isX18ReservedByDefault(const Triple &TT);
+
 } // namespace RISCV
 } // namespace llvm
 
