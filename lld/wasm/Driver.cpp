@@ -1240,6 +1240,7 @@ void LinkerDriver::linkerMain(ArrayRef<const char *> argsArr) {
   // We process the stub libraries once beofore LTO to ensure that any possible
   // required exports are preserved by the LTO process.
   processStubLibrariesPreLTO();
+  writeWhyExtract();
 
   // Do link-time optimization if given files are LLVM bitcode files.
   // This compiles bitcode files into real object files.
