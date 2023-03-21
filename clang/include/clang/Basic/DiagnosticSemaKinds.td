@@ -9184,7 +9184,7 @@ def err_operator_overload_default_arg : Error<
 
 def ext_subscript_overload : Warning<
   "overloaded %0 with %select{no|a defaulted|more than one}1 parameter is a "
-  "C++23 extension">, InGroup<CXXPre23Compat>, DefaultIgnore;
+  "C++2b extension">, InGroup<CXXPre2bCompat>, DefaultIgnore;
 def error_subscript_overload : Error<
   "overloaded %0 cannot have %select{no|a defaulted|more than one}1 parameter before C++23">;
 
