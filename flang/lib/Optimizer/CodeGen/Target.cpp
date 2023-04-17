@@ -362,6 +362,76 @@ struct TargetX86_64Win : public GenericTarget<TargetX86_64Win> {
 } // namespace
 
 //===----------------------------------------------------------------------===//
+// x86_64 (x86 64 bit) Windows target specifics.
+//===----------------------------------------------------------------------===//
+
+namespace {
+struct TargetX86_64Win : public GenericTarget<TargetX86_64Win> {
+  using GenericTarget::GenericTarget;
+
+  static constexpr int defaultWidth = 64;
+
+  CodeGenSpecifics::Marshalling
+  complexArgumentType(mlir::Location loc, mlir::Type eleTy) const override {
+    CodeGenSpecifics::Marshalling marshal;
+    const auto *sem = &floatToSemantics(kindMap, eleTy);
+    if (sem == &llvm::APFloat::IEEEsingle()) {
+      // i64   pack both floats in a 64-bit GPR
+      marshal.emplace_back(mlir::IntegerType::get(eleTy.getContext(), 64),
+                           AT{});
+    } else if (sem == &llvm::APFloat::IEEEdouble()) {
+      // Use a type that will be translated into LLVM as:
+      // { double, double }   struct of 2 double, byval, align 8
+      marshal.emplace_back(
+          fir::ReferenceType::get(mlir::TupleType::get(
+              eleTy.getContext(), mlir::TypeRange{eleTy, eleTy})),
+          AT{/*align=*/8, /*byval=*/true});
+    } else if (sem == &llvm::APFloat::IEEEquad() ||
+               sem == &llvm::APFloat::x87DoubleExtended()) {
+      // Use a type that will be translated into LLVM as:
+      // { t, t }   struct of 2 eleTy, byval, align 16
+      marshal.emplace_back(
+          fir::ReferenceType::get(mlir::TupleType::get(
+              eleTy.getContext(), mlir::TypeRange{eleTy, eleTy})),
+          AT{/*align=*/16, /*byval=*/true});
+    } else {
+      TODO(loc, "complex for this precision");
+    }
+    return marshal;
+  }
+
+  CodeGenSpecifics::Marshalling
+  complexReturnType(mlir::Location loc, mlir::Type eleTy) const override {
+    CodeGenSpecifics::Marshalling marshal;
+    const auto *sem = &floatToSemantics(kindMap, eleTy);
+    if (sem == &llvm::APFloat::IEEEsingle()) {
+      // i64   pack both floats in a 64-bit GPR
+      marshal.emplace_back(mlir::IntegerType::get(eleTy.getContext(), 64),
+                           AT{});
+    } else if (sem == &llvm::APFloat::IEEEdouble()) {
+      // Use a type that will be translated into LLVM as:
+      // { double, double }   struct of 2 double, sret, align 8
+      marshal.emplace_back(
+          fir::ReferenceType::get(mlir::TupleType::get(
+              eleTy.getContext(), mlir::TypeRange{eleTy, eleTy})),
+          AT{/*align=*/8, /*byval=*/false, /*sret=*/true});
+    } else if (sem == &llvm::APFloat::IEEEquad() ||
+               sem == &llvm::APFloat::x87DoubleExtended()) {
+      // Use a type that will be translated into LLVM as:
+      // { t, t }   struct of 2 eleTy, sret, align 16
+      marshal.emplace_back(
+          fir::ReferenceType::get(mlir::TupleType::get(
+              eleTy.getContext(), mlir::TypeRange{eleTy, eleTy})),
+          AT{/*align=*/16, /*byval=*/false, /*sret=*/true});
+    } else {
+      TODO(loc, "complex for this precision");
+    }
+    return marshal;
+  }
+};
+} // namespace
+
+//===----------------------------------------------------------------------===//
 // AArch64 linux target specifics.
 //===----------------------------------------------------------------------===//
 
