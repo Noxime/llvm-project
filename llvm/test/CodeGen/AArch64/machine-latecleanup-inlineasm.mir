@@ -59,7 +59,10 @@ callsUnwindInit: false
 hasEHCatchret:   false
 hasEHScopes:     false
 hasEHFunclets:   false
+<<<<<<< HEAD
 isOutlined:      false
+=======
+>>>>>>> ec79a4730428 ([CodeGen] precommit machine-latecleanup test)
 debugInstrRef:   false
 failsVerification: false
 tracksDebugUserValues: true
