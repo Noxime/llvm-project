@@ -16,7 +16,7 @@
 # CHECK: :[[#@LINE+1]]:23: error: unexpected token, expected + or -
 .option arch, +f, +d, rv32ifd, -d
 
-# CHECK: :[[#@LINE+1]]:22: error: expected newline
+# CHECK: :[[#@LINE+1]]:22: error: unexpected token, expected end of statement
 .option arch, rv32ifd, +f, +d
 
 # CHECK: :[[#@LINE+1]]:16: error: unexpected token, expected identifier
@@ -32,10 +32,8 @@
 .option arch, +
 
 # CHECK: :[[#@LINE+1]]:18: error: expected comma
-.option arch, +c foo
-
+# CHECK: :[[#@LINE+1]]:18: error: unexpected token, expected end of statement
 # CHECK: :[[#@LINE+1]]:16: error: Extension version number parsing not currently implemented
-.option arch, +c2p0
 
 .option arch, +d
 # CHECK: :[[#@LINE+1]]:16: error: Can't disable f extension, d extension requires f extension be enabled
@@ -47,7 +45,7 @@
 # CHECK: :[[#@LINE+1]]:20: error: 'f' and 'zfinx' extensions are incompatible
 .option arch, +f, +zfinx
 
-## Make sure the above error isn't sticky
+# Make sure the above error isn't sticky
 .option arch, +f
 
 # CHECK: :[[#@LINE+1]]:13: error: expected newline

@@ -2791,12 +2791,17 @@ bool RISCVAsmParser::parseDirectiveOption() {
         clearFeatureBits(Ext->Value, Ext->Key);
       }
     } while (Parser.getTok().isNot(AsmToken::EndOfStatement));
-
     if (Parser.parseEOL())
       return true;
+            Ext->Key, PrefixEmitted, HasComma);
+      }
 
-    getTargetStreamer().emitDirectiveOptionArch(Args);
-    return false;
+      if (!HasComma)
+        return Parser.parseToken(AsmToken::EndOfStatement,
+                                 "unexpected token, expected end of statement");
+      // Eat comma
+      Parser.Lex();
+    }
   }
 
   if (Option == "rvc") {
