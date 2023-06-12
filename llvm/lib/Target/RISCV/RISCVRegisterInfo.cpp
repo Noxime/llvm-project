@@ -69,6 +69,9 @@ RISCVRegisterInfo::getCalleeSavedRegs(const MachineFunction *MF) const {
   switch (Subtarget.getTargetABI()) {
   default:
     llvm_unreachable("Unrecognized ABI");
+  case RISCVABI::ABI_ILP32E:
+  case RISCVABI::ABI_LP64E:
+    return CSR_ILP32E_LP64E_SaveList;
   case RISCVABI::ABI_ILP32:
   case RISCVABI::ABI_LP64:
     return CSR_ILP32_LP64_SaveList;
@@ -82,12 +85,13 @@ RISCVRegisterInfo::getCalleeSavedRegs(const MachineFunction *MF) const {
 }
 
 BitVector RISCVRegisterInfo::getReservedRegs(const MachineFunction &MF) const {
+  const RISCVSubtarget &STI = MF.getSubtarget<RISCVSubtarget>();
   const RISCVFrameLowering *TFI = getFrameLowering(MF);
   BitVector Reserved(getNumRegs());
 
   // Mark any registers requested to be reserved as such
   for (size_t Reg = 0; Reg < getNumRegs(); Reg++) {
-    if (MF.getSubtarget<RISCVSubtarget>().isRegisterReservedByUser(Reg))
+    if (STI.isRegisterReservedByUser(Reg))
       markSuperRegs(Reserved, Reg);
   }
 
@@ -102,6 +106,11 @@ BitVector RISCVRegisterInfo::getReservedRegs(const MachineFunction &MF) const {
   // variable-sized objects at runtime.
   if (TFI->hasBP(MF))
     markSuperRegs(Reserved, RISCVABI::getBPReg()); // bp
+
+  // There are only 16 GPRs for RVE.
+  if (STI.isRVE())
+    for (size_t Reg = RISCV::X16; Reg <= RISCV::X31; Reg++)
+      markSuperRegs(Reserved, Reg);
 
   // V registers for code generation. We handle them manually.
   markSuperRegs(Reserved, RISCV::VL);
@@ -634,6 +643,9 @@ RISCVRegisterInfo::getCallPreservedMask(const MachineFunction & MF,
   switch (Subtarget.getTargetABI()) {
   default:
     llvm_unreachable("Unrecognized ABI");
+  case RISCVABI::ABI_ILP32E:
+  case RISCVABI::ABI_LP64E:
+    return CSR_ILP32E_LP64E_RegMask;
   case RISCVABI::ABI_ILP32:
   case RISCVABI::ABI_LP64:
     return CSR_ILP32_LP64_RegMask;
