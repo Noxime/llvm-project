@@ -3,6 +3,7 @@
 // RUN: %clang -target riscv64-unknown-linux-gnu -march=rv64i -x c -E -dM %s \
 // RUN: -o - | FileCheck %s
 
+// CHECK-NOT: __riscv_32e
 // CHECK-NOT: __riscv_div {{.*$}}
 // CHECK-NOT: __riscv_m {{.*$}}
 // CHECK-NOT: __riscv_mul {{.*$}}
@@ -76,6 +77,21 @@
 // RUN: %clang -target riscv64-unknown-linux-gnu -march=rv64i -x c -E -dM %s \
 // RUN: -o - | FileCheck %s
 // CHECK: __riscv_i 2001000{{$}}
+
+// RUN: %clang -target riscv32-unknown-linux-gnu -march=rv32e -x c -E -dM %s \
+// RUN: -o - | FileCheck --check-prefixes=CHECK-E-EXT,CHECK-RV32E %s
+// RUN: %clang -target riscv64-unknown-linux-gnu -march=rv64e -x c -E -dM %s \
+// RUN: -o - | FileCheck --check-prefixes=CHECK-E-EXT,CHECK-RV64E %s
+// RUN: %clang -target riscv32-unknown-linux-gnu -march=rv32i -mabi=ilp32e -x c -E -dM %s \
+// RUN: -o - | FileCheck --check-prefix=CHECK-ILP32E %s
+// RUN: %clang -target riscv64-unknown-linux-gnu -march=rv64i -mabi=lp64e -x c -E -dM %s \
+// RUN: -o - | FileCheck --check-prefix=CHECK-LP64E %s
+// CHECK-RV32E: __riscv_32e 1
+// CHECK-RV64E: __riscv_64e 1
+// CHECK-E-EXT: __riscv_abi_rve 1
+// CHECK-E-EXT: __riscv_e 2000000{{$}}
+// CHECK-ILP32E: __riscv_abi_rve 1
+// CHECK-LP64E: __riscv_abi_rve 1
 
 // RUN: %clang -target riscv32-unknown-linux-gnu -march=rv32im -x c -E -dM %s \
 // RUN: -o - | FileCheck --check-prefix=CHECK-M-EXT %s
